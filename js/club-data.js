@@ -104,8 +104,72 @@
     teams.forEach(t => { if (nameError(clean(t.name), LIMITS.team, "Team name")) errs.push("A team has an invalid name."); if (t.coachId && !staff.some(s => s.id === t.coachId)) errs.push("Team " + t.name + " has a missing coach."); });
     players.forEach(p => { if (p.teamId && !teams.some(t => t.id === p.teamId)) errs.push("Player " + p.name + " is on a missing team."); });
     staff.forEach(s => { if (s.source === "coach" ? !d.coach : nameError(clean(s.name), LIMITS.name, "Name")) errs.push("A staff record is invalid."); });
+    return errs.concat(validateLineups(d));
+  }
+
+  // ---- Formations: rows from goalkeeper to attack, [role, players in row]
+  const FORMATIONS = {
+    "4-3-3": [["GK", 1], ["DEF", 4], ["MID", 3], ["FWD", 3]],
+    "4-4-2": [["GK", 1], ["DEF", 4], ["MID", 4], ["FWD", 2]],
+    "4-2-3-1": [["GK", 1], ["DEF", 4], ["MID", 2], ["MID", 3], ["FWD", 1]],
+    "3-5-2": [["GK", 1], ["DEF", 3], ["MID", 5], ["FWD", 2]]
+  };
+  // Pitch coordinates in % (x left->right, y top->bottom; goalkeeper at the bottom).
+  function slotsFor(name) {
+    const rows = FORMATIONS[name], out = [];
+    if (!rows) return out;
+    rows.forEach(([role, n], r) => {
+      const y = 88 - r * (74 / (rows.length - 1));
+      for (let i = 0; i < n; i++) out.push({ role, x: Math.round((i + 1) / (n + 1) * 1000) / 10, y: Math.round(y * 10) / 10 });
+    });
+    return out;
+  }
+  // d.teams[].lineups = { "<season>": { formation: "4-3-3", slots: [playerId|"" x 11] } }
+  function lineupOf(d, teamId, season, create) {
+    const t = d.teams.find(x => x.id === teamId);
+    if (!t) return null;
+    if (create) { t.lineups = t.lineups || {}; if (!t.lineups[season]) t.lineups[season] = { formation: "4-3-3", slots: Array(11).fill("") }; }
+    return (t.lineups && t.lineups[season]) || null;
+  }
+  function setFormation(d, teamId, season, formation) {
+    const sn = clean(season);
+    if (!FORMATIONS[formation]) return fail("Unknown formation.");
+    if (!sn || sn.length > 20) return fail("Season is required (20 characters max).");
+    const lu = lineupOf(d, teamId, sn, true);
+    if (!lu) return fail("Team not found.");
+    const old = slotsFor(lu.formation), byRole = {};     // keep each player in the same line (GK/DEF/MID/FWD)
+    old.forEach((s, i) => { if (lu.slots[i]) (byRole[s.role] = byRole[s.role] || []).push(lu.slots[i]); });
+    lu.formation = formation;
+    lu.slots = slotsFor(formation).map(s => (byRole[s.role] || []).shift() || "");
+    return ok(lu);
+  }
+  function assignSlot(d, teamId, season, index, playerId) {
+    const sn = clean(season), pid = playerId === "" || playerId == null ? "" : String(playerId);
+    if (!sn) return fail("Season is required.");
+    if (!Number.isInteger(index) || index < 0 || index > 10) return fail("Invalid position.");
+    if (pid && !d.players.some(p => String(p.id) === pid)) return fail("Player not found.");
+    const lu = lineupOf(d, teamId, sn, true);
+    if (!lu) return fail("Team not found.");
+    if (pid && lu.slots.some((x, i) => i !== index && x === pid)) return fail("That player is already in the starting eleven.");
+    lu.slots[index] = pid; return ok(lu);
+  }
+  function validateLineups(d) {
+    const errs = [];
+    (d.teams || []).forEach(t => Object.entries(t.lineups || {}).forEach(([season, lu]) => {
+      const tag = t.name + " " + season;
+      if (!FORMATIONS[lu.formation]) return errs.push(tag + ": unknown formation.");
+      if (!Array.isArray(lu.slots) || lu.slots.length !== 11) return errs.push(tag + ": lineup must have 11 positions.");
+      const used = lu.slots.filter(Boolean);
+      if (new Set(used).size !== used.length) errs.push(tag + ": a player is used twice.");
+      if (used.some(id => !d.players.some(p => String(p.id) === String(id)))) errs.push(tag + ": lineup uses an unknown player.");
+    }));
     return errs;
   }
-  const api = { HEAD_ID, LIMITS, migrate, resolveStaff, addTeam, renameTeam, updateTeam, deleteTeam, assignPlayer, assignCoach, addStaff, updateStaff, removeStaff, validate };
+  function seasonsOf(d) {
+    const set = new Set(); if (d.club && d.club.season) set.add(String(d.club.season));
+    (d.teams || []).forEach(t => Object.keys(t.lineups || {}).forEach(k => set.add(k)));
+    return [...set].sort().reverse();
+  }
+  const api = { HEAD_ID, LIMITS, FORMATIONS, slotsFor, setFormation, assignSlot, validateLineups, seasonsOf, migrate, resolveStaff, addTeam, renameTeam, updateTeam, deleteTeam, assignPlayer, assignCoach, addStaff, updateStaff, removeStaff, validate };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.ClubData = api;
 })(typeof window !== "undefined" ? window : globalThis);
