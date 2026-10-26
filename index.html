@@ -9,29 +9,36 @@
 </head>
 <body>
 <header class="wrap">
-  <a class="brand" href="#home"><div class="crest" id="crest">S</div><div><div class="brand-name" id="brandName">SPARTIANS</div><div class="muted" style="font-size:9px;letter-spacing:2px">OFFICIAL CLUB HUB</div></div></a>
-  <nav class="nav"><a href="#home">Overview</a><a href="#squad">First Team</a><a href="#coach">Head Coach</a><a href="pages/teams.html">Teams</a></nav>
-  <div class="season"><span class="dot"></span><span id="season">SEASON 2026/27</span></div>
+  <a class="brand" href="#overview"><div class="crest" id="crest">S</div><div><div class="brand-name" id="brandName"></div><div class="muted" style="font-size:9px;letter-spacing:2px">OFFICIAL CLUB HUB</div></div></a>
+  <div class="top-right"><div class="season"><span class="dot"></span><span id="season"></span></div><a class="admin-login" href="admin.html">ADMIN LOGIN</a></div>
 </header>
+<nav class="nav wrap" aria-label="Main sections"><a data-nav="overview" href="#overview">Overview</a><a data-nav="players" href="#players">Players</a><a data-nav="coach" href="#coach">Coach</a><a data-nav="seasons" href="#seasons">Seasons</a><a data-nav="teams" href="#teams">Teams</a><a data-nav="formation" href="#formation">Team Formation</a></nav>
 <main class="wrap">
-<section class="hero" id="home"><div class="hero-in"><div><div class="eyebrow" id="eyebrow"></div><h1 id="heroTitle"></h1><p class="motto" id="motto">One badge. One belief. No limits.</p><div class="actions"><a class="btn primary" href="#squad">EXPLORE THE SQUAD ↗</a><button class="btn" id="share">↗ SHARE CLUB</button></div></div><div class="eyebrow" id="heroTag"></div></div></section>
-<section class="stats" aria-label="Club statistics">
+<section class="hero" id="home" data-view="overview"><div class="hero-in"><div><div class="eyebrow" id="eyebrow"></div><h1 id="heroTitle"></h1><p class="motto" id="motto">One badge. One belief. No limits.</p><div class="actions"><a class="btn primary" href="#players">EXPLORE THE SQUAD ↗</a><button class="btn" id="share">↗ SHARE CLUB</button></div></div><div class="eyebrow" id="heroTag"></div></div></section>
+<section class="stats" aria-label="Club statistics" data-view="overview">
   <article class="stat"><div class="stat-label">First-team squad</div><div class="stat-value" id="statPlayers">—</div><div class="stat-note">Registered players</div></article>
   <article class="stat"><div class="stat-label">Average rating</div><div class="stat-value" id="statRating">—</div><div class="stat-note">Squad overall</div></article>
   <article class="stat"><div class="stat-label">Matches played</div><div class="stat-value" id="statMatches">—</div><div class="stat-note">All competitions</div></article>
   <article class="stat"><div class="stat-label">Market value</div><div class="stat-value" id="statValue">—</div><div class="stat-note">Estimated squad value</div></article>
 </section>
-<section id="squad">
+<section id="squad" data-view="players">
   <div class="section-head"><div><div class="kicker">THE PEOPLE BEHIND THE BADGE</div><h2 class="title">FIRST TEAM <span class="gold">/ SQUAD</span></h2><p class="desc">Player ratings, technical attributes and individual profiles.</p></div><div class="count">SHOWING <strong id="visibleCount">12</strong> PLAYERS</div></div>
   <div class="toolbar"><div class="filters" role="group" aria-label="Position filters"><button class="filter active" data-filter="ALL" aria-pressed="true">All players</button><button class="filter" data-filter="FWD" aria-pressed="false">Forwards</button><button class="filter" data-filter="MID" aria-pressed="false">Midfielders</button><button class="filter" data-filter="DEF" aria-pressed="false">Defenders</button><button class="filter" data-filter="GK" aria-pressed="false">Goalkeepers</button></div><label class="search">⌕ <input id="search" type="search" placeholder="Search players..." aria-label="Search players"></label></div>
   <div class="grid" id="grid" aria-live="polite"></div>
 </section>
-<section class="coach-section" id="coach"><div class="section-head"><div><div class="kicker">THE MIND BEHIND THE TEAM</div><h2 class="title">MEET THE <span class="gold">COACH</span></h2><p class="desc">Leadership, tactical identity and club culture.</p></div></div>
+<section class="coach-section" id="coach" data-view="coach"><div class="section-head"><div><div class="kicker">THE MIND BEHIND THE TEAM</div><h2 class="title">MEET THE <span class="gold">COACH</span></h2><p class="desc">Leadership, tactical identity and club culture.</p></div></div>
   <article class="coach-panel"><div class="coach-photo" id="coachPhoto"></div><div class="coach-content"><div class="kicker">FIRST TEAM MANAGEMENT</div><h3 class="coach-name" id="coachName"></h3><div class="coach-role" id="coachRole"></div><p class="coach-bio" id="coachBio"></p><div class="facts"><div class="fact"><span>Experience</span><strong id="coachExperience"></strong></div><div class="fact"><span>Formation</span><strong id="coachFormation"></strong></div><div class="fact"><span>License</span><strong id="coachLicense"></strong></div></div><div class="quote" id="coachQuote"></div></div></article>
+<h3 class="sub-h">Coaching staff</h3><div class="tiles" id="staffList"></div>
 </section>
+<section data-view="overview" id="highlights"><div class="section-head"><div><div class="kicker">SQUAD HIGHLIGHTS</div><h2 class="title">TOP <span class="gold">RATED</span></h2></div></div><div class="tiles" id="highlightList"></div></section>
+<section data-view="seasons" id="seasons"><div class="section-head"><div><div class="kicker">SEASON ARCHIVE</div><h2 class="title">SEA<span class="gold">SONS</span></h2><p class="desc">Choose a season to see its information and starting lineup.</p></div><div id="seasonPick"></div></div><div class="tiles" id="seasonInfo"></div></section>
+<section data-view="teams" id="teams"><div class="section-head"><div><div class="kicker">SQUADS</div><h2 class="title">CLUB <span class="gold">TEAMS</span></h2></div></div><div class="tiles" id="teamList"></div></section>
+<section data-view="formation" id="formation"><div class="section-head"><div><div class="kicker">STARTING ELEVEN</div><h2 class="title">TEAM <span class="gold">FORMATION</span></h2><p class="desc" id="formationDesc"></p></div><div class="actions" id="formationPick"></div></div><div id="pitchBox"></div></section>
 <footer><div><strong id="footerClub">SPARTIANS</strong> · OFFICIAL CLUB HUB</div><div id="footerMotto"></div><div id="copyright"></div></footer>
 </main>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalName"><div class="modal-panel"><button class="close" id="close" aria-label="Close player profile">×</button><div class="kicker">PLAYER PROFILE / TECHNICAL REPORT</div><h2 class="modal-name" id="modalName"></h2><div class="muted" id="modalSub"></div><div class="divider"></div><div class="label">PLAYER ATTRIBUTES</div><div class="attr-list" id="attrList"></div><div class="divider"></div><div class="label">TOP STRENGTHS</div><div class="chips" id="modalStrengths"></div><div class="weakness"><div class="label" style="margin-top:15px">AREAS TO IMPROVE</div><div class="chips" id="modalWeaknesses"></div></div></div></div>
+<script src="js/club-data.js" defer></script>
+<script src="js/site-views.js" defer></script>
 <script src="js/public.js" defer></script>
 </body>
 </html>
