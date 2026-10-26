@@ -1,0 +1,30 @@
+/* Admin styling; shared tokens are in theme.css. */
+/* Admin-only layout and components. Shared colors and accessibility tokens live in theme.css. */
+/* Admin Studio styling. Edit this file to change the admin appearance. */
+:root{--bg:#061428;--panel:#0b2140;--line:#d4af3733;--text:#f8fafc;--muted:#b7c3d5;--lime:#d4af37;--red:#ff918a;--accent:#d4af37}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#97ce5213,transparent 35rem),var(--bg);color:var(--text);font:14px/1.5 Inter,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--lime);outline-offset:2px}a{color:var(--lime);text-decoration:none}.wrap{width:min(1180px,calc(100% - 32px));margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}.brand{display:flex;gap:11px;align-items:center}.crest{width:39px;height:43px;display:grid;place-items:center;background:var(--lime);color:#111;font:900 23px "Barlow Condensed";clip-path:polygon(50% 0,100% 15%,91% 73%,50% 100%,9% 73%,0 15%)}h1,h2,h3,p{margin-top:0}h1,h2,.big{font-family:"Barlow Condensed",Impact,sans-serif;text-transform:uppercase}h1{font-size:36px;margin:0}h2{font-size:30px;margin-bottom:8px}.muted{color:var(--muted)}.kicker{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--lime);text-transform:uppercase}.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px;margin:24px auto 60px}.side,.panel{border:1px solid var(--line);border-radius:12px;background:#ffffff04}.side{padding:10px;height:max-content;position:sticky;top:12px}.tab{width:100%;text-align:left;padding:12px;border:0;background:transparent;color:#aab2a5;border-radius:7px;font-size:12px}.tab.active,.tab:hover{background:var(--accent)12;color:var(--lime)}.side-note{font-size:10px;color:var(--muted);padding:13px}.panel{padding:22px;min-width:0}.panelhead{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:18px}.hidden{display:none!important}.btn{border:1px solid var(--line);border-radius:7px;background:#ffffff08;color:white;padding:10px 13px;font-size:11px;font-weight:800}.btn.primary{background:var(--lime);border-color:var(--lime);color:#111}.btn.danger{color:#ffaaa4;border-color:#ff918a44}.btn:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap}.notice{padding:11px 13px;border-radius:7px;margin-bottom:15px;background:var(--accent)0d;border:1px solid var(--accent)22;color:#d6e9b7;font-size:11px}.notice.error{background:#ff918a0d;border-color:#ff918a33;color:#ffb8b3}.notice:empty{display:none}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:10px;color:#bac3b5;font-weight:700}.field input,.field textarea,.field select{width:100%;background:#0d110e;border:1px solid var(--line);border-radius:7px;padding:11px;color:white;min-width:0}.field textarea{min-height:95px;resize:vertical}.field small{font-size:10px;color:var(--muted)}.roster{display:grid;gap:8px}.player-row{display:grid;grid-template-columns:45px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:8px;background:#ffffff03}.avatar{width:45px;height:52px;border-radius:5px;background:#20291f;display:grid;place-items:center;color:var(--lime);font:800 20px "Barlow Condensed";overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.player-row strong{display:block;font-size:12px}.player-row small{color:var(--muted);font-size:10px}.preview{display:flex;align-items:center;gap:12px}.preview img{width:70px;height:82px;object-fit:cover;border-radius:8px;background:#20291f}.status{font-size:10px;color:var(--muted);margin-top:9px}.rule{border:0;border-top:1px solid var(--line);margin:20px 0}.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:4px 8px;color:var(--muted);font-size:10px}.footer{padding:20px 0;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.help{font-size:11px;line-height:1.8;color:var(--muted)}@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:static;display:flex;overflow:auto}.tab{white-space:nowrap;width:auto}.side-note{display:none}.panel{padding:15px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.panelhead{flex-direction:column}.player-row{grid-template-columns:42px minmax(0,1fr)}.player-row .actions{grid-column:1/-1}.player-row .actions .btn{flex:1}}
+
+:root{--bg:#061428;--panel:#0b2140;--text:#f8fafc;--muted:#b7c3d5;--lime:#d4af37;--accent:#d4af37}
+:root[data-theme="black-red"]{--bg:#12090d;--panel:#24121a;--lime:#ff4b5c;--accent:#ff4b5c}
+:root[data-theme="blue-white"]{--bg:#f3f6fb;--panel:#ffffff;--text:#10213a;--muted:#5e6d82;--lime:#174a8b;--accent:#174a8b}
+:root[data-theme="green-black"]{--bg:#07120d;--panel:#11251a;--lime:#74d99f;--accent:#74d99f}
+
+/* Friendly usability improvements */
+.wrap{max-width:var(--content-width)}
+button,.btn,.tab{min-height:40px}
+input,select,textarea{min-height:42px}
+.tab{border:1px solid transparent}
+.tab:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.panel{box-shadow:0 8px 24px rgba(0,0,0,.10)}
+.notice{line-height:1.6}
+.help,.muted,.status{line-height:1.7}
+@media(max-width:760px){
+  .side{gap:5px;padding:7px}
+  .tab{padding:10px;font-size:12px}
+  header{align-items:flex-start;flex-wrap:wrap}
+  .actions{width:100%}
+  .actions .btn{flex:1;text-align:center}
+}
+
+button,.btn,.tab{min-height:40px}.field input,.field textarea,.field select{min-height:42px}
+.panel{box-shadow:0 8px 24px rgba(0,0,0,.10)}.notice,.help,.muted,.status{line-height:1.7}
+@media(max-width:760px){.side{gap:5px;padding:7px}.tab{padding:10px;font-size:12px}header{align-items:flex-start;flex-wrap:wrap}.actions{width:100%}.actions .btn{flex:1;text-align:center}}
