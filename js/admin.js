@@ -1,49 +1,98 @@
-// Admin Studio logic: roster, coach, club settings, login, and publishing.
-const API_BASE = "https://forge-fc-admin.sports-management-hub-chitral.workers.dev";
-const $ = s => document.querySelector(s);
-let state = null, baseSha = null, session = sessionStorage.getItem("forgeSession") || "";
-let stagedImages = [], currentPhotoPreview = {player:null, coach:null}, editingId = null;
+// Teams & staff editor. Loaded after admin.js; reuses its session, `state`, `msg()` and
+// Publish button, so login and publishing are unchanged. All rules live in club-data.js.
+(function () {
+  "use strict";
+  const panel = document.getElementById("teamsPanel");
+  const tab = document.querySelector('[data-tab="teams"]');
+  // Never interfere with login: do nothing unless the admin page and its globals are present.
+  if (!panel || !tab || typeof msg !== "function" || !window.ClubData) return;
+  const CD = window.ClubData;
 
-function msg(text,error=false){const el=$("#message");el.textContent=text;el.classList.toggle("error",error);if(text)window.scrollTo({top:0,behavior:"smooth"});}
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function id(){return "p-"+(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2));}
-function authHeaders(json=true){const h={};if(json)h["Content-Type"]="application/json";if(session)h.Authorization="Bearer "+session;return h;}
-async function api(path,opts={}){const r=await fetch(API_BASE+path,{...opts,headers:{...authHeaders(opts.body!==undefined),...(opts.headers||{})}});const text=await r.text();let data={};try{data=text?JSON.parse(text):{}}catch{}if(!r.ok)throw Error(data.error||`Request failed (${r.status})`);return data;}
-function showPanel(name){document.querySelectorAll("[data-panel]").forEach(p=>p.classList.toggle("hidden",p.dataset.panel!==name));document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));if(name==="players")renderRoster();}
-document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showPanel(b.dataset.tab)));
-function updateAdminBrand(){const c=state?.club||{};const label=document.querySelector("#adminClubLabel");const crest=document.querySelector("#adminCrest");if(label)label.textContent=c.name||"SPARTIANS";if(crest)crest.textContent=c.shortName||"S";}
-function updateAuthUI(){const on=!!session;$("#loginBtn").classList.toggle("hidden",on);$("#logoutBtn").classList.toggle("hidden",!on);$("#authStatus").textContent=on?"Signed in":"Not signed in";$("#publishBtn").disabled=!on||!state;}
-function hydrateForms(){const c=state.coach||{};for(const [key,field] of Object.entries({name:"coachName",role:"coachRole",experience:"coachExperience",formation:"coachFormation",license:"coachLicense",image:"coachImage",bio:"coachBio",quote:"coachQuote"}))$("#"+field).value=c[key]||"";const b=state.club||{};for(const [key,field] of Object.entries({name:"clubName",shortName:"shortName",motto:"clubMotto",established:"established",season:"season",matchesPlayed:"matches",marketValueMillions:"marketValue",currency:"currency",logo:"clubLogo",theme:"clubTheme"}))$("#"+field).value=b[key]??(key==="theme"?"navy-gold":"");$("#adminClubLabel").textContent=b.name||"SPARTIANS";$("#adminCrest").textContent=b.shortName||"S";renderCoachPreview();updateAdminBrand();}
-function renderCoachPreview(){const path=$("#coachImage").value;$("#coachPreview").innerHTML=path?`<img src="${esc(path)}" alt="Coach preview" onerror="this.style.opacity=.25"><span class="muted">Current portrait</span>`:"";}
-function renderRoster(){if(!state)return;const q=$("#rosterSearch").value.trim().toLowerCase();const ps=state.players.filter(p=>[p.name,p.position,p.nationality].join(" ").toLowerCase().includes(q));$("#roster").innerHTML=ps.map(p=>`<div class="player-row"><div class="avatar">${p.image?`<img src="${esc(p.image)}" alt="" onerror="this.remove();this.parentElement.textContent='${esc((p.name||'?').slice(0,1))}'">`:esc((p.name||"?").slice(0,1))}</div><div><strong>${esc(p.name)} <span class="pill">${esc(p.position)}</span></strong><small>#${esc(p.number)} · ${esc(p.overall)} OVR · ${esc(p.nationality)}</small></div><div class="actions"><button class="btn" data-edit="${esc(p.id)}">Edit</button><button class="btn danger" data-delete="${esc(p.id)}">Delete</button></div></div>`).join("")||'<p class="muted">No matching players.</p>';}
-$("#rosterSearch").addEventListener("input",renderRoster);
-$("#roster").addEventListener("click",e=>{const edit=e.target.closest("[data-edit]");const del=e.target.closest("[data-delete]");if(edit)openPlayerForm(state.players.find(p=>String(p.id)===edit.dataset.edit));if(del){const p=state.players.find(x=>String(x.id)===del.dataset.delete);if(p&&confirm(`Delete ${p.name}? This takes effect on the public site after publishing.`)){state.players=state.players.filter(x=>x.id!==p.id);renderRoster();msg(`${p.name} removed from draft. Publish to make it live.`);}}});
-function openPlayerForm(p={id:id(),name:"",number:0,position:"MID",overall:70,age:20,nationality:"",image:"",strengths:[],weaknesses:[],attributes:{pace:70,shooting:70,passing:70,dribbling:70,defending:50,physical:70}}){editingId=p.id;currentPhotoPreview.player=null;$("#playerForm")?.remove();const html=`<div id="playerForm" class="modal" style="display:flex;position:fixed;inset:0;z-index:30;background:#000d;align-items:center;justify-content:center;padding:16px"><form id="playerEditForm" class="panel" style="width:min(760px,100%);max-height:92vh;overflow:auto;background:var(--panel)"><div class="panelhead"><div><div class="kicker">PLAYER EDITOR</div><h2>${p.name?"Edit player":"Add player"}</h2></div><button type="button" class="btn" id="cancelPlayer">Close ×</button></div><div class="formgrid">
-<div class="field"><label>Name</label><input name="name" required value="${esc(p.name)}"></div><div class="field"><label>Nationality</label><input name="nationality" value="${esc(p.nationality)}"></div>
-<div class="field"><label>Jersey number</label><input name="number" type="number" min="0" max="99" value="${esc(p.number)}" required></div><div class="field"><label>Position</label><select name="position">${["GK","DEF","MID","FWD"].map(x=>`<option ${p.position===x?"selected":""}>${x}</option>`).join("")}</select></div>
-<div class="field"><label>Overall rating (1–99)</label><input name="overall" type="number" min="1" max="99" value="${esc(p.overall)}" required></div><div class="field"><label>Age</label><input name="age" type="number" min="15" max="60" value="${esc(p.age)}"></div>
-<div class="field full"><label>Current photo path</label><input name="image" id="playerImagePath" value="${esc(p.image)}" placeholder="images/player-name.jpg"><small>Or upload a photo below; it will be staged for GitHub when you publish.</small></div>
-<div class="field full"><label>Upload / replace portrait</label><input type="file" id="playerUpload" accept="image/jpeg,image/png,image/webp"><div id="playerPreview" class="preview"></div></div>
-<div class="field full"><label>Top strengths (comma separated; up to 3 shown)</label><input name="strengths" value="${esc((p.strengths||[]).join(", "))}"></div><div class="field full"><label>Weaknesses (comma separated)</label><input name="weaknesses" value="${esc((p.weaknesses||[]).join(", "))}"></div>
-${[["pace","Pace"],["shooting","Shooting"],["passing","Passing"],["dribbling","Dribbling"],["defending","Defending"],["physical","Physical"]].map(([k,l])=>`<div class="field"><label>${l} (1–99)</label><input name="attr_${k}" type="number" min="1" max="99" value="${esc(p.attributes?.[k]??50)}"></div>`).join("")}
-</div><hr class="rule"><div class="actions"><button class="btn primary" type="submit">Save player to draft</button><button class="btn" type="button" id="cancelPlayer2">Cancel</button></div></form></div>`;document.body.insertAdjacentHTML("beforeend",html);const modal=$("#playerForm");$("#cancelPlayer").onclick=$("#cancelPlayer2").onclick=()=>modal.remove();$("#playerUpload").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const image=await stageImage(file,p.name||"player");currentPhotoPreview.player=image.path;$("#playerImagePath").value=image.path;$("#playerPreview").innerHTML=`<img src="${image.dataUrl}" alt="Selected photo"><span class="muted">${esc(file.name)} · staged</span>`;}catch(err){msg(err.message,true);}});$("#playerEditForm").addEventListener("submit",e=>{e.preventDefault();const f=new FormData(e.target);const existing=state.players.find(x=>String(x.id)===String(editingId));const obj={id:editingId,name:f.get("name").trim(),number:Number(f.get("number")),position:f.get("position"),overall:Number(f.get("overall")),age:Number(f.get("age")||0),nationality:f.get("nationality").trim(),image:f.get("image").trim(),strengths:String(f.get("strengths")).split(",").map(x=>x.trim()).filter(Boolean).slice(0,3),weaknesses:String(f.get("weaknesses")).split(",").map(x=>x.trim()).filter(Boolean).slice(0,2),attributes:{pace:Number(f.get("attr_pace")),shooting:Number(f.get("attr_shooting")),passing:Number(f.get("attr_passing")),dribbling:Number(f.get("attr_dribbling")),defending:Number(f.get("attr_defending")),physical:Number(f.get("attr_physical"))}};const i=state.players.findIndex(x=>String(x.id)===String(editingId));if(i>=0)state.players[i]=obj;else state.players.push(obj);modal.remove();renderRoster();msg(`${obj.name} saved to draft. Publish to make it live.`);});}
-$("#addPlayer").addEventListener("click",()=>openPlayerForm());
-async function stageImage(file,label){if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw Error("Choose a JPEG, PNG or WebP image.");if(file.size>4*1024*1024)throw Error("Image must be 4 MB or smaller.");const ext={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"}[file.type];const safe=String(label||"photo").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,45)||"photo";const path=`images/${safe}-${Date.now()}.${ext}`;const dataUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(Error("Could not read image."));r.readAsDataURL(file);});stagedImages=stagedImages.filter(x=>x.path!==path);stagedImages.push({path,dataUrl,mime:file.type});$("#queueStatus").textContent=`${stagedImages.length} new image(s) staged for publishing.`;return {path,dataUrl};}
-$("#coachUpload").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const image=await stageImage(file,"coach");$("#coachImage").value=image.path;$("#coachPreview").innerHTML=`<img src="${image.dataUrl}" alt="Coach photo preview"><span class="muted">Staged for publish</span>`;}catch(err){msg(err.message,true);}});
-$("#coachImage").addEventListener("input",renderCoachPreview);
-$("#coachForm").addEventListener("submit",e=>{e.preventDefault();state.coach={...state.coach,name:$("#coachName").value.trim(),role:$("#coachRole").value.trim(),experience:$("#coachExperience").value.trim(),formation:$("#coachFormation").value.trim(),license:$("#coachLicense").value.trim(),image:$("#coachImage").value.trim(),bio:$("#coachBio").value.trim(),quote:$("#coachQuote").value.trim()};msg("Coach changes saved to draft. Publish to make them live.");});
-$("#clubLogoUpload").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const image=await stageImage(file,"spartians-crest");$("#clubLogo").value=image.path;msg("Logo staged. Save club settings, then publish.");}catch(err){msg(err.message,true);}});
-$("#clubForm").addEventListener("submit",e=>{e.preventDefault();state.club={...state.club,name:$("#clubName").value.trim(),shortName:$("#shortName").value.trim(),motto:$("#clubMotto").value.trim(),logo:$("#clubLogo").value.trim(),theme:$("#clubTheme").value,established:Number($("#established").value),season:$("#season").value.trim(),matchesPlayed:Number($("#matches").value),marketValueMillions:Number($("#marketValue").value),currency:$("#currency").value.trim()};$("#adminClubLabel").textContent=state.club.name;$("#adminCrest").textContent=state.club.shortName||"S";document.documentElement.dataset.theme=state.club.theme;updateAdminBrand();msg("Club settings saved to draft. Publish to make them live.");});
-function downloadJSON(obj,filename){const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
-$("#exportBtn").addEventListener("click",()=>state&&downloadJSON(state,"spartians-club-backup.json"));
-$("#importFile").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!data.club||!data.coach||!Array.isArray(data.players))throw Error("Backup must contain club, coach, and players.");state=data;hydrateForms();renderRoster();updateAuthUI();msg("Backup imported to draft. Review it and publish when ready.");}catch(err){msg("Import failed: "+err.message,true);}e.target.value="";});
-$("#discardBtn").addEventListener("click",async()=>{if(!confirm("Discard current draft and reload the published version?"))return;await loadPublished();});
-async function loadPublished(){try{const d=await api("/api/state",{method:"GET"});state=d.data;baseSha=d.sha;stagedImages=[];hydrateForms();renderRoster();updateAuthUI();$("#publishStatus").textContent=`Loaded published version ${baseSha||"(no SHA returned)"}.`;$("#queueStatus").textContent="No new images staged.";msg("Published version loaded.");}catch(e){msg("Could not load published data: "+e.message,true);}}
-$("#loginBtn").addEventListener("click",()=>{if(!API_BASE.startsWith("https://")||API_BASE.includes("YOUR-WORKER")){msg("Configure API_BASE in admin.html with your deployed HTTPS Worker URL first.",true);return;}location.href=API_BASE+"/auth/login?return="+encodeURIComponent(location.origin+location.pathname);});
-$("#logoutBtn").addEventListener("click",async()=>{try{await api("/auth/logout",{method:"POST",body:JSON.stringify({})});}catch{}session="";sessionStorage.removeItem("forgeSession");updateAuthUI();msg("Signed out.");});
-async function processLogin(){const params=new URLSearchParams(location.hash.slice(1));const incoming=params.get("session");if(incoming){session=incoming;sessionStorage.setItem("forgeSession",session);history.replaceState(null,"",location.pathname+location.search);updateAuthUI();await loadPublished();return;}if(session){updateAuthUI();await loadPublished();}else updateAuthUI();}
-$("#publishBtn").addEventListener("click",async()=>{if(!state||!session)return;const btn=$("#publishBtn");btn.disabled=true;btn.textContent="Publishing…";try{const images=stagedImages.map(x=>({path:x.path,mime:x.mime,base64:x.dataUrl.split(",")[1]}));const result=await api("/api/publish",{method:"POST",body:JSON.stringify({data:state,baseSha,images})});baseSha=result.sha;stagedImages=[];$("#queueStatus").textContent="No new images staged.";$("#publishStatus").textContent=`Published successfully. Commit: ${result.commit||result.sha}`;msg("Published! GitHub now contains your updated club data and photos.");}catch(e){msg("Publish failed: "+e.message,true);$("#publishStatus").textContent="Not published. If another staff member published first, reload the published version and re-apply your changes.";}finally{btn.textContent="↥ Publish to GitHub";btn.disabled=!session||!state;}});
-async function boot(){try{await processLogin();}catch(e){msg(e.message,true);}}
-boot();
+  function el(tag, props, ...kids) {           // safe DOM builder: text never becomes HTML
+    const n = document.createElement(tag);
+    Object.entries(props || {}).forEach(([k, v]) => (k in n ? (n[k] = v) : n.setAttribute(k, v)));
+    kids.flat().forEach(k => n.append(k));
+    return n;
+  }
+  const btn = (text, fn, cls = "btn") => { const b = el("button", { type: "button", className: cls, textContent: text }); b.addEventListener("click", fn); return b; };
+  const wrap = (label, control) => el("label", { className: "field" }, el("span", { textContent: label }), control);
+  const field = (label, value, max, apply, tag = "input") => {
+    const i = el(tag, { value: value || "", maxLength: max, ariaLabel: label });
+    i.addEventListener("change", () => { const r = apply(i.value); if (!r.ok) { i.value = value || ""; msg(r.error, true); } else msg("Saved to draft. Publish to make it live.", false); });
+    return wrap(label, i);
+  };
+  const select = (label, options, current, apply) => {
+    const s = el("select", { ariaLabel: label }, options.map(([v, t]) => el("option", { value: v, textContent: t, selected: v === current })));
+    s.addEventListener("change", () => { const r = apply(s.value); if (!r.ok) msg(r.error, true); else msg("Saved to draft. Publish to make it live.", false); });
+    return wrap(label, s);
+  };
+  const done = (r, text, rerender = true) => { if (!r.ok) return msg(r.error, true); if (rerender) render(); msg(text, false); };
 
-window.addEventListener("DOMContentLoaded",()=>{let requested=null;try{requested=sessionStorage.getItem("spartiansOpenTab")}catch(e){}if(requested){const tab=document.querySelector(`[data-tab="${requested}"]`);if(tab)tab.click();try{sessionStorage.removeItem("spartiansOpenTab")}catch(e){}}});
+  // ---- Starting formation editor (saved in the draft; published with the normal Publish button)
+  let fTeam = "", fSeason = "";
+  function renderFormation() {
+    panel.append(el("h3", { textContent: "Starting formation" }));
+    if (!state.teams.length) { panel.append(el("p", { className: "muted", textContent: "Add a team first." })); return; }
+    if (!state.teams.some(t => t.id === fTeam)) fTeam = state.teams[0].id;
+    if (!fSeason) fSeason = String((state.club && state.club.season) || "");
+    const team = state.teams.find(t => t.id === fTeam);
+    const current = (team.lineups || {})[fSeason] || { formation: "4-3-3", slots: Array(11).fill("") };
+    const teamSel = select("Team", state.teams.map(t => [t.id, t.name]), fTeam, v => { fTeam = v; render(); return { ok: true }; });
+    const seasonIn = el("input", { value: fSeason, maxLength: 20, ariaLabel: "Season", placeholder: "Season, e.g. 2026/27" });
+    seasonIn.addEventListener("change", () => { fSeason = seasonIn.value.trim(); render(); });
+    const formSel = select("Formation", Object.keys(CD.FORMATIONS).map(f => [f, f]), current.formation, v => { const r = CD.setFormation(state, fTeam, fSeason, v); if (r.ok) render(); return r; });
+    panel.append(el("div", { className: "card" }, teamSel, wrap("Season", seasonIn), formSel));
+    const options = [["", "— empty —"], ...state.players.slice().sort((a, b) => (a.number || 99) - (b.number || 99)).map(p => [String(p.id), "#" + p.number + " " + p.name + " (" + p.position + ")"])];
+    const slots = el("div", { className: "card" });
+    CD.slotsFor(current.formation).forEach((sl, i) => slots.append(select(sl.role + " · position " + (i + 1), options, current.slots[i] || "", v => {
+      const r = CD.assignSlot(state, fTeam, fSeason, i, v);
+      if (!r.ok) setTimeout(render, 0);            // put the dropdown back to the saved value
+      return r;
+    })));
+    panel.append(slots, el("p", { className: "muted", textContent: "A player can only appear once. The public Team Formation page shows this lineup after you publish." }));
+  }
+
+  function render() {
+    panel.replaceChildren(el("h2", { textContent: "Teams & staff" }));
+    if (typeof state === "undefined" || !state) { panel.append(el("p", { className: "muted", textContent: "Sign in and load the published data first." })); return; }
+    CD.migrate(state);
+    panel.append(el("p", { className: "muted", textContent: "Edits change the draft. Use Publish & backups to make them live." }));
+    const staff = state.staff.map(s => CD.resolveStaff(state, s));
+
+    panel.append(el("h3", { textContent: "Teams (" + state.teams.length + ")" }));
+    state.teams.forEach(t => {
+      const count = state.players.filter(p => p.teamId === t.id).length;
+      panel.append(el("div", { className: "card" },
+        field("Team name", t.name, CD.LIMITS.team, v => CD.renameTeam(state, t.id, v)),
+        field("Formation", t.formation, CD.LIMITS.formation, v => CD.updateTeam(state, t.id, { formation: v })),
+        field("Description", t.description, CD.LIMITS.description, v => CD.updateTeam(state, t.id, { description: v }), "textarea"),
+        select("Coach", [["", "— none —"], ...staff.map(s => [s.id, s.name])], t.coachId || "", v => CD.assignCoach(state, t.id, v)),
+        el("p", { className: "muted", textContent: count + " player(s) assigned" }),
+        btn("Delete team", () => { if (!count && !confirm("Delete team “" + t.name + "”?")) return; done(CD.deleteTeam(state, t.id), "Team deleted in draft."); })));
+    });
+    const nt = el("input", { maxLength: CD.LIMITS.team, placeholder: "New team name", ariaLabel: "New team name" });
+    panel.append(el("div", { className: "card" }, nt, btn("Add team", () => done(CD.addTeam(state, nt.value), "Team added to draft."), "btn primary")));
+
+    panel.append(el("h3", { textContent: "Squad assignment" }));
+    const teamOpts = [["", "— unassigned —"], ...state.teams.map(t => [t.id, t.name])];
+    state.players.forEach(p => panel.append(select(p.name + " (#" + p.number + ")", teamOpts, p.teamId || "", v => CD.assignPlayer(state, p.id, v))));
+
+    renderFormation();
+    panel.append(el("h3", { textContent: "Coaches & staff (" + staff.length + ")" }));
+    state.staff.forEach((raw, i) => {
+      const s = staff[i];
+      if (raw.source === "coach") { panel.append(el("div", { className: "card" }, el("strong", { textContent: s.name }), el("p", { className: "muted", textContent: (s.role || "Head coach") + " · edit in the Head Coach tab" }))); return; }
+      panel.append(el("div", { className: "card" },
+        field("Name", s.name, CD.LIMITS.name, v => CD.updateStaff(state, s.id, { name: v })),
+        field("Role", s.role, CD.LIMITS.role, v => CD.updateStaff(state, s.id, { role: v })),
+        field("Qualifications", s.license, CD.LIMITS.role, v => CD.updateStaff(state, s.id, { license: v })),
+        field("Biography", s.bio, CD.LIMITS.bio, v => CD.updateStaff(state, s.id, { bio: v }), "textarea"),
+        btn("Remove", () => { if (confirm("Remove “" + s.name + "”? They will be unassigned from any team.")) done(CD.removeStaff(state, s.id), "Staff removed from draft."); })));
+    });
+    const ns = el("input", { maxLength: CD.LIMITS.name, placeholder: "New staff member name", ariaLabel: "New staff name" });
+    panel.append(el("div", { className: "card" }, ns, btn("Add staff member", () => done(CD.addStaff(state, ns.value), "Staff added to draft."), "btn primary")));
+  }
+  tab.addEventListener("click", () => {
+    try { render(); } catch (e) { panel.textContent = "Teams editor could not load. Login and publishing are unaffected."; console.error(e); }
+  });
+})();
