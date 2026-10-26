@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#061428"><title>Players & Squad · SPARTIANS</title>
+<link rel="stylesheet" href="../css/theme.css"><link rel="stylesheet" href="../css/admin.css">
+<style>
+.page{width:min(780px,calc(100% - 32px));margin:48px auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+h1{font-size:clamp(28px,5vw,42px);margin:0 0 8px}
+p{color:var(--muted);line-height:1.7}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+a.button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border-radius:8px;border:1px solid var(--line);color:var(--text);text-decoration:none}
+a.primary{background:var(--accent);color:#061428;font-weight:800}
+</style></head><body><main class="page"><section class="card">
+<div class="kicker">SPARTIANS · ADMIN STUDIO</div><h1>Players & Squad</h1><p>Manage player profiles, ratings, portraits, and positions.</p>
+<p>To preserve the existing login session and publishing workflow, this shortcut opens the matching section in the main Admin Studio rather than duplicating authentication code.</p>
+<div class="links"><a class="button primary" href="../admin.html" id="open">Open Players & Squad</a><a class="button" href="../admin.html">Admin home</a><a class="button" href="../index.html">Public website</a></div>
+</section></main><script>
+document.getElementById('open').addEventListener('click',function(){try{sessionStorage.setItem('spartiansOpenTab','players')}catch(e){}});
+</script></body></html>
