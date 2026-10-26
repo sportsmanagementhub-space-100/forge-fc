@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="var(--bg)">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f3f9fe">
 <meta name="robots" content="noindex,nofollow"><title>SPARTIANS | Admin Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css"><link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 <div class="wrap">
-<header><div class="brand"><div class="crest" id="adminCrest">S</div><div><div class="kicker" id="adminClubLabel">SPARTIANS</div><h1>Admin Studio</h1></div></div><div class="actions"><a class="btn" href="./index.html" target="_blank" rel="noopener">View public site ↗</a><button class="btn" id="loginBtn">Sign in with GitHub</button><button class="btn hidden" id="logoutBtn">Sign out</button></div></header>
+<header><div class="brand"><div class="crest" id="adminCrest">S</div><div><div class="kicker" id="adminClubLabel">SPARTIANS</div><h1>Admin Studio</h1></div></div><div class="actions"><a class="btn" href="./index.html" target="_blank" rel="noopener">View public site ↗</a><button class="btn primary" id="loginBtn">Sign in with GitHub</button><button class="btn hidden" id="logoutBtn">Sign out</button></div></header>
 <div class="layout">
 <aside class="side">
 <button class="tab active" data-tab="players">♙ &nbsp; Squad & players</button>
@@ -22,7 +22,7 @@
 <div id="message" class="notice"></div>
 <section class="panel" data-panel="players">
 <div class="panelhead"><div><div class="kicker">ROSTER MANAGEMENT</div><h2>Squad & players</h2><div class="muted" style="font-size:11px">Add, edit, upload portraits or remove players.</div></div><button class="btn primary" id="addPlayer">＋ Add player</button></div>
-<div class="field" style="margin-bottom:15px"><label for="rosterSearch">Search roster</label><input id="rosterSearch" placeholder="Player name, position, nationality..." style="background:#0d110e;border:1px solid var(--line);border-radius:7px;padding:11px;color:white"></div>
+<div class="field" style="margin-bottom:15px"><label for="rosterSearch">Search roster</label><input id="rosterSearch" placeholder="Player name, position, nationality..."></div>
 <div class="roster" id="roster"></div>
 </section>
 <section class="panel hidden" data-panel="coach">
