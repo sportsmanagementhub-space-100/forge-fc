@@ -1,0 +1,4 @@
+:root{color-scheme:dark;--brand-navy:#061428;--brand-blue:#0b2140;--brand-gold:#d4af37;--brand-ivory:#f8fafc;--bg:var(--brand-navy);--panel:var(--brand-blue);--accent:var(--brand-gold);--text:var(--brand-ivory);--muted:#b7c3d5;--line:rgba(212,175,55,.20);--radius:12px;--content-width:1180px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+button,input,select,textarea{font:inherit}button{touch-action:manipulation}img{max-width:100%}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
