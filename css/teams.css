@@ -1,0 +1,9 @@
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+.page{width:min(960px,calc(100% - 32px));margin:32px auto}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.top a{color:var(--accent);text-decoration:none;font-weight:700}
+.top a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.tcard{background:var(--panel);border:1px solid rgba(212,175,55,.25);border-radius:14px;padding:20px}
+.tcard h2{margin:0 0 6px;color:var(--accent)}
+.meta,.empty{opacity:.75}.roster{padding-left:18px;line-height:1.8}
