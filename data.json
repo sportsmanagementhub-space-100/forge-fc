@@ -1,13 +1,15 @@
 {
   "club": {
-    "name": "SPARTIANS FC",
+    "name": "SPARTIANS",
     "shortName": "S",
-    "motto": "UNITY. DISCIPLINE. VICTORY",
-    "established": 2026,
+    "motto": "UNITY. DISCIPLINE. VICTORY.",
+    "established": 2012,
     "season": "2026/27",
-    "matchesPlayed": 5,
+    "matchesPlayed": 28,
     "marketValueMillions": 186,
-    "currency": "€"
+    "currency": "€",
+    "theme": "navy-gold",
+    "logo": ""
   },
   "coach": {
     "name": "James Carter",
@@ -22,13 +24,13 @@
   "players": [
     {
       "id": "p1",
-      "name": "KALEEM HUSSAINI",
-      "number": 13,
-      "position": "DEF",
-      "overall": 99,
-      "age": 25,
-      "nationality": "PAKISTAN",
-      "image": "images/adrian-cole-1793001281643.jpg",
+      "name": "Adrian Cole",
+      "number": 1,
+      "position": "GK",
+      "overall": 86,
+      "age": 29,
+      "nationality": "England",
+      "image": "images/goalie-alex.png",
       "strengths": [
         "Reflexes",
         "Positioning",
