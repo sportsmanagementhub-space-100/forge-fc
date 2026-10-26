@@ -28,6 +28,30 @@
   };
   const done = (r, text, rerender = true) => { if (!r.ok) return msg(r.error, true); if (rerender) render(); msg(text, false); };
 
+  // ---- Starting formation editor (saved in the draft; published with the normal Publish button)
+  let fTeam = "", fSeason = "";
+  function renderFormation() {
+    panel.append(el("h3", { textContent: "Starting formation" }));
+    if (!state.teams.length) { panel.append(el("p", { className: "muted", textContent: "Add a team first." })); return; }
+    if (!state.teams.some(t => t.id === fTeam)) fTeam = state.teams[0].id;
+    if (!fSeason) fSeason = String((state.club && state.club.season) || "");
+    const team = state.teams.find(t => t.id === fTeam);
+    const current = (team.lineups || {})[fSeason] || { formation: "4-3-3", slots: Array(11).fill("") };
+    const teamSel = select("Team", state.teams.map(t => [t.id, t.name]), fTeam, v => { fTeam = v; render(); return { ok: true }; });
+    const seasonIn = el("input", { value: fSeason, maxLength: 20, ariaLabel: "Season", placeholder: "Season, e.g. 2026/27" });
+    seasonIn.addEventListener("change", () => { fSeason = seasonIn.value.trim(); render(); });
+    const formSel = select("Formation", Object.keys(CD.FORMATIONS).map(f => [f, f]), current.formation, v => { const r = CD.setFormation(state, fTeam, fSeason, v); if (r.ok) render(); return r; });
+    panel.append(el("div", { className: "card" }, teamSel, wrap("Season", seasonIn), formSel));
+    const options = [["", "— empty —"], ...state.players.slice().sort((a, b) => (a.number || 99) - (b.number || 99)).map(p => [String(p.id), "#" + p.number + " " + p.name + " (" + p.position + ")"])];
+    const slots = el("div", { className: "card" });
+    CD.slotsFor(current.formation).forEach((sl, i) => slots.append(select(sl.role + " · position " + (i + 1), options, current.slots[i] || "", v => {
+      const r = CD.assignSlot(state, fTeam, fSeason, i, v);
+      if (!r.ok) setTimeout(render, 0);            // put the dropdown back to the saved value
+      return r;
+    })));
+    panel.append(slots, el("p", { className: "muted", textContent: "A player can only appear once. The public Team Formation page shows this lineup after you publish." }));
+  }
+
   function render() {
     panel.replaceChildren(el("h2", { textContent: "Teams & staff" }));
     if (typeof state === "undefined" || !state) { panel.append(el("p", { className: "muted", textContent: "Sign in and load the published data first." })); return; }
@@ -53,6 +77,7 @@
     const teamOpts = [["", "— unassigned —"], ...state.teams.map(t => [t.id, t.name])];
     state.players.forEach(p => panel.append(select(p.name + " (#" + p.number + ")", teamOpts, p.teamId || "", v => CD.assignPlayer(state, p.id, v))));
 
+    renderFormation();
     panel.append(el("h3", { textContent: "Coaches & staff (" + staff.length + ")" }));
     state.staff.forEach((raw, i) => {
       const s = staff[i];
