@@ -1,90 +1,133 @@
-/* Admin Studio styling. Colours come ONLY from theme.css variables (white & sky blue).
-   The data-theme blocks at the bottom mirror the presets chosen in Club settings. */
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 var(--body)}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-a{color:var(--accent-strong);text-decoration:none}
-h1,h2,h3,p{margin-top:0}
-h1,h2,.big{font-family:var(--head);text-transform:uppercase}
-h1{font-size:34px;margin:0;line-height:1}
-h2{font-size:30px;margin-bottom:8px;line-height:1.05}
-.panel h3{font:800 21px var(--head);text-transform:uppercase;color:var(--accent-strong);margin:26px 0 10px}
-.wrap{width:min(var(--content-width),calc(100% - 32px));margin:auto}
-.muted,.help,.status{color:var(--muted);line-height:1.7}
-.hidden{display:none!important}
-/* header */
-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
-.brand{display:flex;gap:12px;align-items:center}
-.crest{width:40px;height:44px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);font:900 23px var(--head);overflow:hidden;clip-path:polygon(50% 0,100% 15%,91% 73%,50% 100%,9% 73%,0 15%)}
-.kicker{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--accent-strong);text-transform:uppercase}
-/* buttons: one consistent shape, size and set of states */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:10px 16px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);font-size:12px;font-weight:800;line-height:1.2;text-align:center;text-decoration:none;transition:background .15s,border-color .15s,box-shadow .15s}
-.btn:hover{border-color:var(--accent-strong);background:var(--panel-2)}
-.btn:active{transform:translateY(1px)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.btn.primary:hover{background:var(--accent-strong);border-color:var(--accent-strong);color:#fff}
-.btn.danger{color:var(--red);border-color:color-mix(in srgb,var(--red) 40%,var(--line))}
-.btn.danger:hover{background:color-mix(in srgb,var(--red) 10%,var(--panel));border-color:var(--red)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-:focus-visible{outline:3px solid var(--accent-strong);outline-offset:2px}
-/* layout + navigation */
-.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:22px;margin:24px auto 56px}
-.side,.panel,.card,.player-row{background:var(--panel);border:1px solid var(--line)}
-.side{border-radius:12px;padding:10px;height:max-content;position:sticky;top:12px;box-shadow:var(--shadow);display:grid;gap:4px}
-.tab{display:flex;align-items:center;width:100%;min-height:42px;text-align:left;padding:10px 12px;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:8px;font-size:13px;font-weight:600}
-.tab:hover{background:var(--panel-2);color:var(--text)}
-.tab.active{background:var(--accent);color:var(--on-accent);font-weight:800}
-.side-note{font-size:11px;color:var(--muted);padding:12px}
-.panel{border-radius:12px;padding:24px;min-width:0;box-shadow:var(--shadow)}
-.panelhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
-.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
-/* messages */
-.notice{padding:12px 14px;border-radius:8px;margin-bottom:16px;background:var(--panel-2);border:1px solid var(--line);border-left:4px solid var(--accent-strong);color:var(--text);font-size:12px;line-height:1.6}
-.notice.error{background:#fdf1ef;border-color:#f3c9c3;border-left-color:var(--red);color:#8a2b20}
-.notice:empty{display:none}
-/* forms */
-.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.field.full{grid-column:1/-1}
-.field label,.field>span{font-size:11px;color:var(--muted);font-weight:700}
-input,select,textarea{width:100%;min-width:0;min-height:42px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--text)}
-input:focus,select:focus,textarea:focus{border-color:var(--accent-strong);outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:0}
-input[type=file]{padding:8px;background:var(--panel-2)}
-textarea{min-height:95px;resize:vertical}
-.field small{font-size:11px;color:var(--muted)}
-/* roster, avatars, previews */
-.roster{display:grid;gap:10px}
-.player-row{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px}
-.player-row:hover{border-color:var(--accent)}
-.player-row strong{display:block;font-size:13px}.player-row small{color:var(--muted);font-size:11px}
-.avatar{width:46px;height:52px;border-radius:6px;background:var(--panel-2);display:grid;place-items:center;color:var(--accent-strong);font:800 20px var(--head);overflow:hidden}
-.avatar img,.preview img{width:100%;height:100%;object-fit:cover}
-.preview{display:flex;align-items:center;gap:12px}
-.preview img{width:70px;height:82px;border-radius:8px;background:var(--panel-2)}
-.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:4px 10px;color:var(--muted);font-size:11px;background:var(--panel-2)}
-/* Teams & staff + formation editor (js/admin-teams.js) */
-.card{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;align-items:end;border-radius:10px;padding:16px;margin-bottom:12px}
-.card>textarea,.card>p,.card>strong{grid-column:1/-1}
-.card>.btn{justify-self:start}
-.card input[placeholder]:only-of-type{max-width:none}
-.footer{padding:20px 0;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+/* Admin styling; shared tokens are in theme.css. */
+/* Admin-only layout and components. Shared colors and accessibility tokens live in theme.css. */
+/* Admin Studio styling. Edit this file to change the admin appearance. */
+:root{--bg:#061428;--panel:#0b2140;--line:#d4af3733;--text:#f8fafc;--muted:#b7c3d5;--lime:#d4af37;--red:#ff918a;--accent:#d4af37}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#97ce5213,transparent 35rem),var(--bg);color:var(--text);font:14px/1.5 Inter,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--lime);outline-offset:2px}a{color:var(--lime);text-decoration:none}.wrap{width:min(1180px,calc(100% - 32px));margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}.brand{display:flex;gap:11px;align-items:center}.crest{width:39px;height:43px;display:grid;place-items:center;background:var(--lime);color:#111;font:900 23px "Barlow Condensed";clip-path:polygon(50% 0,100% 15%,91% 73%,50% 100%,9% 73%,0 15%)}h1,h2,h3,p{margin-top:0}h1,h2,.big{font-family:"Barlow Condensed",Impact,sans-serif;text-transform:uppercase}h1{font-size:36px;margin:0}h2{font-size:30px;margin-bottom:8px}.muted{color:var(--muted)}.kicker{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--lime);text-transform:uppercase}.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px;margin:24px auto 60px}.side,.panel{border:1px solid var(--line);border-radius:12px;background:#ffffff04}.side{padding:10px;height:max-content;position:sticky;top:12px}.tab{width:100%;text-align:left;padding:12px;border:0;background:transparent;color:#aab2a5;border-radius:7px;font-size:12px}.tab.active,.tab:hover{background:var(--accent)12;color:var(--lime)}.side-note{font-size:10px;color:var(--muted);padding:13px}.panel{padding:22px;min-width:0}.panelhead{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:18px}.hidden{display:none!important}.btn{border:1px solid var(--line);border-radius:7px;background:#ffffff08;color:white;padding:10px 13px;font-size:11px;font-weight:800}.btn.primary{background:var(--lime);border-color:var(--lime);color:#111}.btn.danger{color:#ffaaa4;border-color:#ff918a44}.btn:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap}.notice{padding:11px 13px;border-radius:7px;margin-bottom:15px;background:var(--accent)0d;border:1px solid var(--accent)22;color:#d6e9b7;font-size:11px}.notice.error{background:#ff918a0d;border-color:#ff918a33;color:#ffb8b3}.notice:empty{display:none}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:10px;color:#bac3b5;font-weight:700}.field input,.field textarea,.field select{width:100%;background:#0d110e;border:1px solid var(--line);border-radius:7px;padding:11px;color:white;min-width:0}.field textarea{min-height:95px;resize:vertical}.field small{font-size:10px;color:var(--muted)}.roster{display:grid;gap:8px}.player-row{display:grid;grid-template-columns:45px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:8px;background:#ffffff03}.avatar{width:45px;height:52px;border-radius:5px;background:#20291f;display:grid;place-items:center;color:var(--lime);font:800 20px "Barlow Condensed";overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.player-row strong{display:block;font-size:12px}.player-row small{color:var(--muted);font-size:10px}.preview{display:flex;align-items:center;gap:12px}.preview img{width:70px;height:82px;object-fit:cover;border-radius:8px;background:#20291f}.status{font-size:10px;color:var(--muted);margin-top:9px}.rule{border:0;border-top:1px solid var(--line);margin:20px 0}.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:4px 8px;color:var(--muted);font-size:10px}.footer{padding:20px 0;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.help{font-size:11px;line-height:1.8;color:var(--muted)}@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:static;display:flex;overflow:auto}.tab{white-space:nowrap;width:auto}.side-note{display:none}.panel{padding:15px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.panelhead{flex-direction:column}.player-row{grid-template-columns:42px minmax(0,1fr)}.player-row .actions{grid-column:1/-1}.player-row .actions .btn{flex:1}}
+
+:root{--bg:#061428;--panel:#0b2140;--text:#f8fafc;--muted:#b7c3d5;--lime:#d4af37;--accent:#d4af37}
+:root[data-theme="black-red"]{--bg:#12090d;--panel:#24121a;--lime:#ff4b5c;--accent:#ff4b5c}
+:root[data-theme="blue-white"]{--bg:#f3f6fb;--panel:#ffffff;--text:#10213a;--muted:#5e6d82;--lime:#174a8b;--accent:#174a8b}
+:root[data-theme="green-black"]{--bg:#07120d;--panel:#11251a;--lime:#74d99f;--accent:#74d99f}
+
+/* Friendly usability improvements */
+.wrap{max-width:var(--content-width)}
+button,.btn,.tab{min-height:40px}
+input,select,textarea{min-height:42px}
+.tab{border:1px solid transparent}
+.tab:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.panel{box-shadow:0 8px 24px rgba(0,0,0,.10)}
+.notice{line-height:1.6}
+.help,.muted,.status{line-height:1.7}
 @media(max-width:760px){
-.layout{grid-template-columns:1fr}
-.side{position:static;display:flex;overflow-x:auto;gap:6px;padding:7px}
-.tab{white-space:nowrap;width:auto;flex:0 0 auto}
-.side-note{display:none}
-.panel{padding:16px}
-.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}
-.panelhead{flex-direction:column}
-.player-row{grid-template-columns:42px minmax(0,1fr)}
-.player-row .actions{grid-column:1/-1}.player-row .actions .btn{flex:1}
-header{align-items:flex-start}
-header .actions{width:100%}header .actions .btn{flex:1}
-.card{grid-template-columns:1fr}
+  .side{gap:5px;padding:7px}
+  .tab{padding:10px;font-size:12px}
+  header{align-items:flex-start;flex-wrap:wrap}
+  .actions{width:100%}
+  .actions .btn{flex:1;text-align:center}
 }
-/* Presets from Club settings (admin.js sets data-theme on <html>) */
-:root[data-theme="black-red"]{color-scheme:dark;--bg:#12090d;--panel:#24121a;--panel-2:#2e1822;--accent:#ff4b5c;--accent-strong:#ff4b5c;--on-accent:#12090d;--text:#fff7f8;--muted:#c9aab0;--line:#ffffff22}
-:root[data-theme="blue-white"]{--bg:#f3f6fb;--panel:#ffffff;--panel-2:#e8eef7;--accent:#174a8b;--accent-strong:#174a8b;--on-accent:#ffffff;--text:#10213a;--muted:#5e6d82;--line:#d5deeb}
-:root[data-theme="green-black"]{color-scheme:dark;--bg:#07120d;--panel:#11251a;--panel-2:#1a3326;--accent:#74d99f;--accent-strong:#74d99f;--on-accent:#07120d;--text:#f3fff7;--muted:#a9c9b7;--line:#ffffff22}
+
+button,.btn,.tab{min-height:40px}.field input,.field textarea,.field select{min-height:42px}
+.panel{box-shadow:0 8px 24px rgba(0,0,0,.10)}.notice,.help,.muted,.status{line-height:1.7}
+@media(max-width:760px){.side{gap:5px;padding:7px}.tab{padding:10px;font-size:12px}header{align-items:flex-start;flex-wrap:wrap}.actions{width:100%}.actions .btn{flex:1;text-align:center}}
+
+/* White and sky-blue admin studio theme */
+:root{color-scheme:light;--bg:#f5fbff;--panel:#fff;--accent:#159ee8;--text:#12364d;--muted:#5b788b;--line:#cfe8f7}body{background:#f5fbff;color:#12364d}header,.side,.panel,.player-row,.modal-card{background:#fff;border-color:#d5eaf7;color:#12364d}h1,h2,h3,.kicker,.brand .kicker{color:#075985}.muted,.help,.side-note{color:#5b788b}.btn{background:#fff;color:#075985;border-color:#b9deef}.btn.primary{background:#159ee8;color:#fff;border-color:#159ee8}.tab{color:#075985}.tab.active{background:#e4f5ff;color:#075985;border-color:#159ee8}input,select,textarea{background:#fff!important;color:#12364d!important;border-color:#b9deef!important}.notice,.status{background:#f0f9ff;color:#075985;border-color:#cfe8f7}.pill{background:#e4f5ff;color:#075985}
+
+/* ===== Visual formation pitch add-on (appended; original CSS preserved above) ===== */
+/* Add this section to the END of css/admin.css. It only styles the visual lineup editor. */
+.formation-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+.formation-help { margin: 12px 0; }
+.formation-pitch {
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto 18px;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,.88);
+  border-radius: 14px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.075) 50%, transparent 50%) 0 0 / 20% 100%,
+    #247b51;
+  box-shadow: inset 0 0 0 1px rgba(12,50,35,.35), 0 8px 22px rgba(15,35,55,.12);
+}
+.formation-pitch::before {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  border: 2px solid rgba(255,255,255,.82);
+  pointer-events: none;
+}
+.formation-pitch::after {
+  content: "";
+  position: absolute;
+  width: 28%;
+  aspect-ratio: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  border: 2px solid rgba(255,255,255,.82);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.formation-pitch .pitch-player {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%,-50%);
+  width: clamp(42px, 11%, 86px);
+  min-height: 34px;
+  max-height: 56px;
+  padding: 5px 4px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #fff;
+  color: #14517e;
+  font: inherit;
+  font-size: clamp(9px, 1.7vw, 12px);
+  font-weight: 750;
+  line-height: 1.15;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,.24);
+  cursor: pointer;
+}
+.formation-pitch .pitch-player.is-empty {
+  background: rgba(255,255,255,.92);
+  color: #3b6654;
+  border-style: dashed;
+}
+.formation-pitch .pitch-player.is-selected {
+  outline: 3px solid #facc15;
+  outline-offset: 2px;
+}
+.formation-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+.formation-slot {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border, #d9e4ed);
+  border-radius: 10px;
+  background: var(--surface, #fff);
+}
+.formation-slot .field { margin: 0; }
+.formation-slot select { width: 100%; min-width: 0; }
+@media (max-width: 680px) {
+  .formation-controls { grid-template-columns: 1fr; }
+  .formation-pitch { aspect-ratio: 2 / 3; }
+  .formation-pitch .pitch-player {
+    width: clamp(42px, 19%, 72px);
+    min-height: 30px;
+    padding: 4px 2px;
+    font-size: 10px;
+  }
+  .formation-slot-grid { grid-template-columns: 1fr; }
+}
